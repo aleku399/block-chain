@@ -59,7 +59,7 @@ const Dashboard = () => {
       </div>
 
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow p-6 mb-4 text-white">
-        <h2 className="text-lg font-semibold mb-2">Block Production</h2>
+        <h2 className="text-lg font-semibold mb-2">Market Trade Bot</h2>
         <div className="flex items-center justify-between">
           <span className="text-3xl font-bold">1234 5678 9012</span>
           <IoIosArrowDown className="text-2xl" />
@@ -84,7 +84,7 @@ const Dashboard = () => {
       <div className="bg-white rounded-lg shadow p-4 mb-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="font-semibold">Coin 24Hr</h3>
-          <span className="text-blue-500 text-sm">See more</span>
+          <span className="text-blue-500 text-sm"><Link to="/market">See more</Link></span>
         </div>
         {isLoading ? (
           <div>Loading...</div>
@@ -92,14 +92,15 @@ const Dashboard = () => {
           <div>{error}</div>
         ) : (
           coins.map((coin) => (
-            <CoinItem
-              key={coin.id}
-              symbol={coin.symbol}
-              name={`${coin.symbol.toUpperCase()}/USDT`}
-              value={coin.current_price.toFixed(4)}
-              change={coin.price_change_percentage_24h.toFixed(2)}
-              image={coin.image}
-            />
+            <Link key={coin.id} to={`/trade/${coin.id}`}>
+              <CoinItem
+                symbol={coin.symbol}
+                name={`${coin.symbol.toUpperCase()}/USDT`}
+                value={coin.current_price.toFixed(4)}
+                change={coin.price_change_percentage_24h.toFixed(2)}
+                image={coin.image}
+              />
+            </Link>
           ))
         )}
       </div>

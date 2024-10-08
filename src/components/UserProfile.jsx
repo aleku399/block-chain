@@ -1,9 +1,20 @@
 import PropTypes from 'prop-types'; // Import PropTypes
 import { FaWallet, FaArrowUp, FaArrowDown, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 import { BsChatDots, BsGear } from 'react-icons/bs';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const username = user ? user.username : "Guest";
+
+  const logout = () => {
+    localStorage.removeItem("token"); 
+    localStorage.removeItem("user"); 
+    navigate("/login");
+  }
+
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
       {/* Profile Header */}
@@ -22,14 +33,14 @@ const UserProfile = () => {
           <div className="flex items-center space-x-4">
             <FaUserCircle className="text-4xl text-gray-600" />
             <div>
-              <h2 className="text-xl font-semibold">NobzBryan</h2>
+              <h2 className="text-xl font-semibold">{username}</h2>
               <p className="text-sm text-gray-500">
                 Reputation Score: <strong>100</strong> <span className="text-green-500">Unbound</span>
               </p>
             </div>
           </div>
           <div>
-            <button className="flex items-center space-x-1 text-red-500">
+            <button onClick={logout} className="flex items-center space-x-1 text-red-500">
               <FaSignOutAlt className="text-2xl" />
               <span>Logout</span>
             </button>

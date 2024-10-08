@@ -1,9 +1,11 @@
 import  { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { BsChatDots, BsGear } from 'react-icons/bs';
+
+import OrderModal from './OrderModal'; 
 
 const fetchCoinDetails = async (coinId) => {
   const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${coinId}`);
@@ -26,6 +28,9 @@ const TradeScreen = () => {
   const [marketData, setMarketData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const getCoinDetails = async () => {
@@ -55,6 +60,14 @@ const TradeScreen = () => {
     time: new Date(price[0]).toLocaleTimeString(),
     price: price[1],
   }));
+
+  const handleOrderConfirm = (orderDetails) => {
+    console.log('Order confirmed:', orderDetails);
+    // Here you would typically send the order to your backend
+    // For now, we'll just redirect to the home page
+    navigate('/');
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
@@ -100,7 +113,10 @@ const TradeScreen = () => {
       </div>
 
       <div className="flex justify-between mb-6">
-        <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded flex items-center">
+        <button 
+          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded flex items-center"
+          onClick={() => setIsModalOpen(true)}
+        >
           <FaArrowDown className="mr-2" />
           Buy Fall
         </button>
@@ -109,6 +125,13 @@ const TradeScreen = () => {
           Buy Up
         </button>
       </div>
+
+      <OrderModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleOrderConfirm}
+        coinData={coinData}
+      />
     </div>
   );
 };

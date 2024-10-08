@@ -1,7 +1,17 @@
+import { useNavigate } from 'react-router-dom';
 import { BsChatDots, BsGear, BsPerson, BsChevronRight } from 'react-icons/bs';
 
 const Logout 
 = () => {
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("token"); 
+    localStorage.removeItem("user"); 
+    navigate("/login");
+  }
+
+  
   return (
     <div className="p-4 bg-white min-h-screen">
       <div className="flex justify-between items-center mb-4">
@@ -33,7 +43,7 @@ const Logout
           <BsChevronRight className="text-gray-400" />
         </div>
 
-        <button className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg mt-4">
+        <button onClick={logout} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg mt-4">
           Logout
         </button>
       </div>

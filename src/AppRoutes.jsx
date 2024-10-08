@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom'; // Import routing components
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'; // Import Navigate for redirection
 import Dashboard from './components/Dashboard';
 import CoinList from './components/CoinList';
 import UserProfile from "./components/UserProfile";
@@ -18,7 +18,7 @@ const AppRoutes = () => {
   // Check if the current path is /login or /register
   const hideLowerMenu = location.pathname === '/login' || location.pathname === '/register';
 
-  console.log(" hideLowerMenu",  hideLowerMenu);
+  console.log(" hideLowerMenu", hideLowerMenu);
 
   const auth = isAuthenticated();
   console.log("Is user authenticated?", auth); // Debugging output
@@ -40,8 +40,8 @@ const AppRoutes = () => {
           <>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            {/* Redirect to login if a user tries to access protected routes */}
-    
+            {/* Redirect to login if a user tries to access a protected route */}
+            <Route path="*" element={<Navigate to="/login" />} />
           </>
         )}
       </Routes>

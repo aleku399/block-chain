@@ -5,6 +5,10 @@ const Logout
 = () => {
   const navigate = useNavigate();
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const username = user ? user.username : "Guest";
+
   const logout = () => {
     localStorage.removeItem("token"); 
     localStorage.removeItem("user"); 
@@ -32,7 +36,7 @@ const Logout
 
         <div className="border-b pb-2">
           <span className="text-gray-600">Username</span>
-          <p className="text-black">mxnobz60@gmail.com</p>
+          <p className="text-black">{username}</p>
         </div>
 
         <div className="flex justify-between items-center border-b pb-2">

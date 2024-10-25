@@ -1,19 +1,39 @@
 import PropTypes from 'prop-types'; // Import PropTypes
+import { useState, useEffect } from 'react'; // Import hooks
 import { FaWallet, FaArrowUp, FaArrowDown, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 import { BsChatDots, BsGear } from 'react-icons/bs';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { fetchUserEarnings } from "../api";
+
 const UserProfile = () => {
+  const [earnings, setEarnings] = useState(null); // State to store earnings data
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
+
   const username = user ? user.username : "Guest";
 
+  const fetchEarnings = async () => {
+    try {
+      const response = await fetchUserEarnings(user.username)
+      setEarnings(response.data[0]); 
+    } catch (error) {
+      console.error('Error fetching earnings:', error.response?.data || error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchEarnings();
+    }
+  }, []);
+
   const logout = () => {
-    localStorage.removeItem("token"); 
-    localStorage.removeItem("user"); 
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/login");
-  }
+  };
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
@@ -51,7 +71,9 @@ const UserProfile = () => {
       {/* Wallet Summary */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow p-6 text-white mb-6">
         <h3 className="text-lg font-semibold mb-2">My Wallet</h3>
-        <div className="text-4xl font-bold mb-4">$4821000.00</div>
+        <div className="text-4xl font-bold mb-4">
+          ${earnings ? earnings.totalIncome : 'Loading...'}
+        </div>
         <div className="flex justify-around">
           <button className="flex flex-col items-center">
             <FaWallet className="text-white text-2xl mb-1" />
@@ -72,12 +94,12 @@ const UserProfile = () => {
       <div className="bg-white rounded-lg shadow p-4 mb-4">
         <h3 className="font-semibold mb-4">Earnings Overview</h3>
         <div className="grid grid-cols-2 gap-4">
-          <EarningsCard label="Today's Earnings" amount="0" />
-          <EarningsCard label="Weekly Earnings" amount="1986000.00" />
-          <EarningsCard label="Monthly Earnings" amount="1986000.00" />
-          <EarningsCard label="Total Income" amount="1986000.00" />
-          <EarningsCard label="Last Month's Earnings" amount="0" />
-          <EarningsCard label="Withdrawn" amount="0" />
+          <EarningsCard label="Today's Earnings" amount={earnings ? earnings.todayEarnings : 'Loading...'} />
+          <EarningsCard label="Weekly Earnings" amount={earnings ? earnings.weeklyEarnings : 'Loading...'} />
+          <EarningsCard label="Monthly Earnings" amount={earnings ? earnings.monthlyEarnings : 'Loading...'} />
+          <EarningsCard label="Total Income" amount={earnings ? earnings.totalIncome : 'Loading...'} />
+          <EarningsCard label="Last Month's Earnings" amount={earnings ? earnings.lastMonthEarnings : 'Loading...'} />
+          <EarningsCard label="Withdrawn" amount={earnings ? earnings.withdrawn : 'Loading...'} />
         </div>
       </div>
     </div>

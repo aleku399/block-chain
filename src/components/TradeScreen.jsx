@@ -6,6 +6,7 @@ import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { BsChatDots, BsGear } from 'react-icons/bs';
 
 import OrderModal from './OrderModal'; 
+import { fetchUserEarnings } from "../api";
 
 const fetchCoinDetails = async (coinId) => {
   const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${coinId}`);
@@ -29,7 +30,27 @@ const TradeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [earnings, setEarnings] = useState(null);
+
   const navigate = useNavigate();
+
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const fetchEarnings = async () => {
+    try {
+      const response = await fetchUserEarnings(user.username)
+      setEarnings(response.data[0]); 
+    } catch (error) {
+      console.error('Error fetching earnings:', error.response?.data || error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchEarnings();
+    }
+  }, []);
 
 
   useEffect(() => {
@@ -131,6 +152,7 @@ const TradeScreen = () => {
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleOrderConfirm}
         coinData={coinData}
+        earnings={earnings}
       />
     </div>
   );
